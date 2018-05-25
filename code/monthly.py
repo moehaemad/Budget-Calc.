@@ -7,6 +7,5 @@ def find_Monthly_Expenditure (names, counts):
         answer = input ("Is " + names[i] + " a monthly ependiture")
         if (answer == "y"):
             monthlies[i] = names[i]
-        
 
         
