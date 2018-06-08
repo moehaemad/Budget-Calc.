@@ -5,38 +5,60 @@ import monthly
 import pdb
 from dates import Dates as dt
 import tkinter as tk
+
+#------------------------------TODO LIST---------------------------------------
+# -Find monthly expenditures
+# -Create graphical display of money spent and money deposited
+# -create graphical display of total amount
+
+def close (master):
+    master.destroy()
+    
+def createFrames(master):
+    statframe = tk.Frame(master)
+    return [statframe]
+def destroyFrames(frames):
+    for frame in frames:
+        frame.destroy()
+    return 0
+
 def load_dataset(filename):
     with open (os.path.join ('..','data',filename), 'rb') as f:
         return pd.read_csv(f, parse_dates = True)
     
-def statistics (X, master=None):
-    frame = tk.Frame (master)
-    frame.pack(expand="YES")
-    tk.Label(frame, text="The latest 5 entries of your statement").pack(side=tk.LEFT)
-    fiveFreq = tk.Listbox(frame)
+def statistics (statframe,X):
+    tk.Label(statframe, text="The latest 5 entries of your statement").pack(side=tk.LEFT)
+    fiveFreq = tk.Listbox(statframe)
     for i in range(0,5):
         fiveFreq.insert(i,X[i,1])
     fiveFreq.pack(side=tk.RIGHT)
-#    print("How many times did you spend most frequently " +  
-#          str(np.max(plcounts)))
-#    sumrange = input ("find total amount for what dates? (yyyy-mm-dd)-"
-#                      +"(yyyy-mm-dd)")
-#    datelist = dt.Dates.organize(sumrange)
-    #TODO: Find total amount for the current date inputted
+    mainbtn = tk.Button(statframe, text="main menu", command=main)
+    mainbtn.pack(side=tk.TOP)
+    statframe.pack(expand=tk.YES)
 
-
-filename = input("please enter the name of the file in the date folder \n")
-read = load_dataset(filename)
-X = read.values
-root = tk.Tk()
-statistics (X, master=root)
-root.mainloop()
+def main():
+    read = load_dataset("visa.csv")
+    X = read.values
+    root = tk.Tk()
+    mainmenu = tk.Menu(root)
+    framelist = createFrames(root)
+    mainmenu.add_command(label="stop", command = lambda: close(master=root))
+    statmenu = tk.Menu(mainmenu,tearoff=0)
+    statmenu.add_command(label="5 latest transactions", command = 
+                         lambda: statistics(framelist[0],X))
+    mainmenu.add_cascade(label="stats", menu=statmenu)
+    root.config(menu=mainmenu)
+    root.mainloop()
+    
+if __name__ == '__main__':
+    main()
 #Create an array where NaN values are replaced with zero
-#TODO: get np.nan_to_num to work with float numbers in the array
-for i in range(X.shape[0]):
-    if np.isnan(X[i,3]):
-        X[i,3]=0
-        #Filter repeating names of transactions
-        places, plcounts = np.unique(X[:,1], return_counts=True)
-        statistics (X)
-        monthly.find_Monthly_Expenditure(places,plcounts)
+
+#pdb.set_trace()
+#for i in range(X.shape[0]):
+#    if np.isnan(X[i,3]):
+#        X[i,3]=0
+#        #Filter repeating names of transactions
+#        places, plcounts = np.unique(X[:,1], return_counts=True)
+#        statistics (X)
+#        monthly.find_Monthly_Expenditure(places,plcounts)
