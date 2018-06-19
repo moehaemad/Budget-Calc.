@@ -1,11 +1,15 @@
 import numpy as np
-def find_Monthly_Expenditure (names, counts):
+
+def create_dictionary (X):
+    return 0
+
+def find_Monthly_Expenditure (X):
 #    frequencies = dict(zip(names,counts))
-    monthlies = np.array (np.shape(names))
-    
-    for i in range(len(names)):
-        answer = input ("Is " + names[i] + " a monthly ependiture")
-        if (answer == "y"):
-            monthlies[i] = names[i]
+    create_dictionary (X[:,[0,1]])
+#    
+#    for i in range(len(names)):
+#        answer = input ("Is " + names[i] + " a monthly ependiture")
+#        if (answer == "y"):
+#            monthlies[i] = names[i]
 
         
