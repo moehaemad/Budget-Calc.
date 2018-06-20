@@ -24,6 +24,8 @@ def create_frames(master):
     return frames
 
 def destroy_frames(frames):
+    if (len(frames)==0):
+        return 0
     for frame in frames:
         frame.destroy()
 
@@ -43,18 +45,21 @@ def statistics (frames,X):
     statframe.pack(expand=tk.YES)
     
 def line_plot(frames, X, master):
+    destroy_frames(frames)
     fig = Figure (figsize=(5,5),dpi=100)
     f = fig.add_subplot(111)
     X[pd.isnull(X[:,3]),3]=0
     X[pd.isnull(X[:,2]),2]=0
-    pdb.set_trace()
+#    pdb.set_trace()
     spending = X[:,2]*-1 + X[:,3]
+    years = [i[0:4] for i in X[:,0]]
 #    pdb.set_trace()
     #TODO: find way to display years as x labels for a number of transactions
     #that isn't clustered
         #TODO: Create datetime objects for the dates
     #TODO: Find way to delete canvas to make the GUI more dynamic
-    f.plot (X[:,0], scalex=True)
+    f.plot (years, spending,scalex=True)
+#    f.set_xticks(ticks=years)
     canvas = FigureCanvasTkAgg (fig, master)
     canvas.show()
     canvas.get_tk_widget().pack(side=tk.TOP, fill = tk.BOTH, expand=True)
