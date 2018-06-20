@@ -12,7 +12,8 @@ import tkinter as tk
 #------------------------------TODO LIST---------------------------------------
 # -Find monthly expenditures
 # -Create graphical display of money spent and money deposited
-# -create graphical display of total amount
+# -Find way to delete canvas to make the GUI more dynamic (i.e. either
+    #remove frames or canvas and use one)
 NUMLATEST = 10
 def close (master):
     master.destroy()
@@ -50,16 +51,9 @@ def line_plot(frames, X, master):
     f = fig.add_subplot(111)
     X[pd.isnull(X[:,3]),3]=0
     X[pd.isnull(X[:,2]),2]=0
-#    pdb.set_trace()
     spending = X[:,2]*-1 + X[:,3]
     years = [i[0:4] for i in X[:,0]]
-#    pdb.set_trace()
-    #TODO: find way to display years as x labels for a number of transactions
-    #that isn't clustered
-        #TODO: Create datetime objects for the dates
-    #TODO: Find way to delete canvas to make the GUI more dynamic
     f.plot (years, spending,scalex=True)
-#    f.set_xticks(ticks=years)
     canvas = FigureCanvasTkAgg (fig, master)
     canvas.show()
     canvas.get_tk_widget().pack(side=tk.TOP, fill = tk.BOTH, expand=True)
@@ -69,7 +63,8 @@ def line_plot(frames, X, master):
 if __name__ == '__main__':
     read = load_dataset("visa.csv")
     X = read.values
-#    monthly.find_Monthly_Expenditure(X)
+#    pdb.set_trace()
+    monthly.find_Monthly_Expenditure(X)
     root = tk.Tk()
     mainmenu = tk.Menu(root)
     frames = create_frames(root)
