@@ -7,7 +7,7 @@ import pdb
 from monthly import Monthly
 from dates import Dates as dt
 import tkinter as tk
-
+import time as t
 
 #------------------------------TODO LIST---------------------------------------
 # -Find monthly expenditures
@@ -67,6 +67,10 @@ if __name__ == '__main__':
     monthly = Monthly()
     monthly.find_Monthly_Expenditure(X=X)
     root = tk.Tk()
+    root.geometry("500x500")
+    t.localtime.__getattribute__
+    tk.Label(root, text="Current time: " + str(t.localtime().tm_mon) + ", " +
+             str(t.localtime().tm_year)).pack()
     mainmenu = tk.Menu(root)
     frames = create_frames(root)
     mainmenu.add_command(label="stop", command = lambda: close(master=root))
