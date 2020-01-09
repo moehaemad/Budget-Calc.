@@ -34,11 +34,11 @@ class Monthly:
         most_freq = np.bincount(counts)
         for i in range(0, len(places)-1):
             #placing dummy statement because not sure whether to include for-loop
-            print(0)
+            print("testing function")
         #create dictionary of the sums of payments made for each place
         #sample solution: create array of true values for which you can find
         #payments were made and for what amount
-        truth_array = X[:,1]* == places[1]
+        truth_array = X[:,1] == places[1]
         np.unique (truth_array*X[:,1])
         
 #        _up_payments = dict(zip())
@@ -47,7 +47,7 @@ class Monthly:
         #find percentages of the current price with respect to others
 #        for i, price in range(0,len(payments)), payments:
 #            std_dev[i] = stdev(price)
-        pdb.set_trace()
+#        pdb.set_trace()
     
     def manual_entry(self, names):
         for i in range(len(names)):
