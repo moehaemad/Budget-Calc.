@@ -15,7 +15,7 @@ class Dates:
         #off to dictionaryDates
         #TODO: Find clever way of finding format of the string returned
         
-        if not errorchecking(strdate):
+        if not error_checking(strdate):
             return 0
         pdb.set_trace()
         year = 0
@@ -32,7 +32,7 @@ class Dates:
             day = int (strdate[0:10])
         #Assuming format will be in year-month-day "-" year-month-day
         return 0
-    def createHashDates(X023):
+    def create_hash_dates(X023):
         #X023 is X[:,[0,2,3]] which contains dates, money spent, payment
         #respectively
         index = np.inf
@@ -40,6 +40,6 @@ class Dates:
         return strdate, index
 #    def update ()#don't really need the update function right now but maybe
         #later
-    def errorChecking (dateinput):
+    def error_checking (dateinput):
         #Example input: 2018-02-22-2019-02-22
         return 0
