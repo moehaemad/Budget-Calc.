@@ -15,6 +15,7 @@ import time as t
 # -Find way to delete canvas to make the GUI more dynamic (i.e. either
     #remove frames or canvas and use one)
 NUMLATEST = 10
+#-----------------------------Tkinter functions-------------------------------#
 def close(master):
     master.destroy()
     
@@ -24,12 +25,15 @@ def create_frames(master):
     frames.append(statframe)
     return frames
 
-def destroy_frames(frames):
+def destroy_frames(frames): #put this into a class to avoid supplying each and
+    #every single frame so the frames can be indexed with "self."
     if (len(frames) == 0):
         return 0
     for frame in frames:
         frame.destroy()
+        
 
+#-----------------------------Statistics--------------------------------------#
 def load_dataset(filename):
     with open(os.path.join ('..','data', filename), 'rb') as f:
         return pd.read_csv(f, parse_dates = True)
@@ -63,7 +67,6 @@ def line_plot(frames, X, master):
 if __name__ == '__main__':
     read = load_dataset("visa.csv")
     X = read.as_matrix()
-#    pdb.set_trace()
     monthly = Monthly()
     monthly.find_Monthly_Expenditure(X=X)
     root = tk.Tk()
