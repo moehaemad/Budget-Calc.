@@ -10,6 +10,16 @@ import tkinter as tk
 from tkinter import filedialog
 import time as t
 
+class MainPage():
+    #To add initial function
+    #def __init__(self):   
+    
+    def load_dataset(self):
+        f = filedialog.askopenfilename()
+        return pd.read_csv(f, parse_dates = True)
+        
+
+
 #------------------------------TODO LIST---------------------------------------
 # -Find monthly expenditures
 # -Create graphical display of money spent and money deposited
@@ -35,9 +45,7 @@ def destroy_frames(frames): #put this into a class to avoid supplying each and
         
 
 #-----------------------------Statistics--------------------------------------#
-def load_dataset(filename):
-    f = filedialog.askopenfilename()
-    return pd.read_csv(f, parse_dates = True)
+
     
 def statistics(frames, X):
     statframe = frames.pop(0)
@@ -66,6 +74,8 @@ def line_plot(frames, X, master):
     canvas.delete("all")
 
 if __name__ == '__main__':
+    mainpage = MainPage()
+    mainpage.load_dataset()
     read = load_dataset("visa.csv")
     X = read.as_matrix()
     monthly = Monthly()
@@ -86,4 +96,5 @@ if __name__ == '__main__':
     mainmenu.add_cascade(label="stats", menu=statmenu)
     root.config(menu=mainmenu)
     root.mainloop()
+    root.destroy()
 
