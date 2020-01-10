@@ -7,6 +7,7 @@ import pdb
 from monthly import Monthly
 from dates import Dates as dt
 import tkinter as tk
+from tkinter import filedialog
 import time as t
 
 #------------------------------TODO LIST---------------------------------------
@@ -35,8 +36,8 @@ def destroy_frames(frames): #put this into a class to avoid supplying each and
 
 #-----------------------------Statistics--------------------------------------#
 def load_dataset(filename):
-    with open(os.path.join ('..','data', filename), 'rb') as f:
-        return pd.read_csv(f, parse_dates = True)
+    f = filedialog.askopenfilename()
+    return pd.read_csv(f, parse_dates = True)
     
 def statistics(frames, X):
     statframe = frames.pop(0)
