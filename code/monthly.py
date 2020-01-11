@@ -32,9 +32,9 @@ class Monthly:
         _up_counts= dict(zip(places, counts))
         payments = X[:,2]
         most_freq = np.bincount(counts)
-        for i in range(0, len(places)-1):
-            #placing dummy statement because not sure whether to include for-loop
-            print("testing function")
+#        for i in range(0, len(places)-1):
+#            #placing dummy statement because not sure whether to include for-loop
+#            print("testing function")
         #create dictionary of the sums of payments made for each place
         #sample solution: create array of true values for which you can find
         #payments were made and for what amount
