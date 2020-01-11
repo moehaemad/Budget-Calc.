@@ -10,9 +10,14 @@ import tkinter as tk
 from tkinter import filedialog
 import time as t
 
-class MainPage():
-    #To add initial function
-    #def __init__(self):   
+class MainPage(tk.Frame):
+    """Each function in this class requires a Tk object that executes a 
+    mainloop """
+    def __init__(self, parent, *args, **kwargs):
+        tk.Frame.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
+            
+        
     
     def load_dataset(self):
         f = filedialog.askopenfilename()
@@ -74,13 +79,12 @@ def line_plot(frames, X, master):
     canvas.delete("all")
 
 if __name__ == '__main__':
-    mainpage = MainPage()
-    mainpage.load_dataset()
-    read = load_dataset("visa.csv")
+    root = tk.Tk()
+    main_page = MainPage()
+    read = mainpage.load_dataset()
     X = read.as_matrix()
     monthly = Monthly()
     monthly.find_Monthly_Expenditure(X=X)
-    root = tk.Tk()
     root.geometry("500x500")
     t.localtime.__getattribute__
     tk.Label(root, text="Current time: " + str(t.localtime().tm_mon) + ", " +
