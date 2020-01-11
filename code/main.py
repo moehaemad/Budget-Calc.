@@ -16,12 +16,18 @@ class MainPage(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
-            
+        self.click_button = tk.Button(self.parent, text="Click to open file",
+                                      command=self.load_dataset)
+        self.click_button.pack()
+        
         
     
     def load_dataset(self):
         f = filedialog.askopenfilename()
-        return pd.read_csv(f, parse_dates = True)
+        self.csv_file = pd.read_csv(f, parse_dates=True)
+#        pdb.set_trace()
+        self.X = self.csv_file.as_matrix()
+        
         
 
 
@@ -52,39 +58,36 @@ def destroy_frames(frames): #put this into a class to avoid supplying each and
 #-----------------------------Statistics--------------------------------------#
 
     
-def statistics(frames, X):
-    statframe = frames.pop(0)
-    if (len(frames) >= 1):
-        destroy_frames(frames)
-    tk.Label(statframe, text="The latest").pack()
-    fiveFreq = tk.Listbox(statframe)
-    for i in range(0, NUMLATEST):
-        fiveFreq.insert(i, X[i,1])
-    fiveFreq.pack(side=tk.RIGHT)
-    statframe.pack(expand=tk.YES)
+#def statistics(frames, X):
+#    statframe = frames.pop(0)
+#    if (len(frames) >= 1):
+#        destroy_frames(frames)
+#    tk.Label(statframe, text="The latest").pack()
+#    fiveFreq = tk.Listbox(statframe)
+#    for i in range(0, NUMLATEST):
+#        fiveFreq.insert(i, X[i,1])
+#    fiveFreq.pack(side=tk.RIGHT)
+#    statframe.pack(expand=tk.YES)
     
-def line_plot(frames, X, master):
-    destroy_frames(frames)
-    fig = Figure (figsize=(5, 5), dpi=100)
-    f = fig.add_subplot(111)
-    X[pd.isnull(X[:, 3]),3]=0
-    X[pd.isnull(X[:, 2]),2]=0
-    spending = X[:, 2]*-1 + X[:, 3]
-    years = [i[0:4] for i in X[:, 0]]
-    f.plot(years, spending, scalex=True)
-    canvas = FigureCanvasTkAgg (fig, master)
-    canvas.show()
-    canvas.get_tk_widget().pack(side=tk.TOP, fill = tk.BOTH, expand=True)
-    canvas._tkcanvas.pack(side=tk.TOP, fill = tk.BOTH, expand=True)
-    canvas.delete("all")
+#def line_plot(frames, X, master):
+#    destroy_frames(frames)
+#    fig = Figure (figsize=(5, 5), dpi=100)
+#    f = fig.add_subplot(111)
+#    X[pd.isnull(X[:, 3]),3]=0
+#    X[pd.isnull(X[:, 2]),2]=0
+#    spending = X[:, 2]*-1 + X[:, 3]
+#    years = [i[0:4] for i in X[:, 0]]
+#    f.plot(years, spending, scalex=True)
+#    canvas = FigureCanvasTkAgg (fig, master)
+#    canvas.show()
+#    canvas.get_tk_widget().pack(side=tk.TOP, fill = tk.BOTH, expand=True)
+#    canvas._tkcanvas.pack(side=tk.TOP, fill = tk.BOTH, expand=True)
+#    canvas.delete("all")
 
 if __name__ == '__main__':
     root = tk.Tk()
-    main_page = MainPage()
-    read = mainpage.load_dataset()
-    X = read.as_matrix()
-    monthly = Monthly()
-    monthly.find_Monthly_Expenditure(X=X)
+#    monthly = Monthly()
+#   monthly.find_Monthly_Expenditure(X=X)
     root.geometry("500x500")
     t.localtime.__getattribute__
     tk.Label(root, text="Current time: " + str(t.localtime().tm_mon) + ", " +
@@ -95,10 +98,10 @@ if __name__ == '__main__':
     statmenu = tk.Menu(mainmenu, tearoff=0)
     statmenu.add_command(label= str(NUMLATEST)+" latest transactions", 
                          command = lambda: statistics(frames,X))
-    statmenu.add_command(label="linear graph trans.", command = lambda: 
-        line_plot(frames, X, root))
+#    statmenu.add_command(label="linear graph trans.", command = lambda: 
+#    line_plot(frames, X, root))
     mainmenu.add_cascade(label="stats", menu=statmenu)
     root.config(menu=mainmenu)
+    MainPage(root).pack()
     root.mainloop()
-    root.destroy()
 
