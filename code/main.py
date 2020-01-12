@@ -74,24 +74,6 @@ class MainPage(tk.Frame):
         self.csv_file = pd.read_csv(f, parse_dates=True)
         self.X = self.csv_file.as_matrix()
         
-NUMLATEST = 10
-#-----------------------------Tkinter functions-------------------------------#
-def close(master):
-    master.destroy()
-    
-def create_frames(master):
-    statframe = tk.Frame(master)
-    frames = list()
-    frames.append(statframe)
-    return frames
-
-def destroy_frames(frames): #put this into a class to avoid supplying each and
-    #every single frame so the frames can be indexed with "self."
-    if (len(frames) == 0):
-        return 0
-    for frame in frames:
-        frame.destroy()
-        
 
 #-----------------------------Statistics--------------------------------------#
 
