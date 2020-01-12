@@ -10,32 +10,70 @@ import tkinter as tk
 from tkinter import filedialog
 import time as t
 
+#------------------------------TODO LIST---------------------------------------
+# -Find monthly expenditures
+# -Create graphical display of money spent and money deposited
+# -Find way to delete canvas to make the GUI more dynamic (i.e. either
+    #remove frames or canvas and use one)
+
+class RepresentExpenditure():
+    def __init__(self, X, parent, *args, **kwargs):
+        self.X = X
+        self.frame = parent
+        self.kwargs = kwargs
+        self.NUMLATEST = kwargs["NUMLATEST"] #temporary number, will make user 
+            #entered
+        
+    def statistics(self):
+        tk.Label(self.frame, text="The latest").pack()
+        fiveFreq = tk.Listbox(self.frame)
+        for i in range(0, self.NUMLATEST):
+            fiveFreq.insert(i, self.X[i,1])
+        fiveFreq.pack(side=tk.RIGHT) 
+        #NOT SURE IF I SHOULD PACK FRAME TWICE ONCE
+            #IN MAINPAGE CLASS AND THE OTHER HERE
+        #self.frame.pack(expand=tk.YES)
+    
+    def line_plot(self, frames, X, master):
+        fig = Figure (figsize=(5, 5), dpi=100)
+        f = fig.add_subplot(111)
+        X[pd.isnull(X[:, 3]),3]=0
+        X[pd.isnull(X[:, 2]),2]=0
+        spending = X[:, 2]*-1 + X[:, 3]
+        years = [i[0:4] for i in X[:, 0]]
+        f.plot(years, spending, scalex=True)
+        canvas = FigureCanvasTkAgg (fig, master)
+        canvas.show()
+        canvas.get_tk_widget().pack(side=tk.TOP, fill = tk.BOTH, expand=True)
+        canvas._tkcanvas.pack(side=tk.TOP, fill = tk.BOTH, expand=True)
+        canvas.delete("all")
+
+
 class MainPage(tk.Frame):
     """Each function in this class requires a Tk object that executes a 
     mainloop """
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
+        pdb.set_trace()
         self.parent = parent
-        self.click_button = tk.Button(self.parent, text="Click to open file",
-                                      command=self.load_dataset)
-        self.click_button.pack()
+        self.top_frame = tk.Frame(self.parent)
+        self.top_frame.pack()
+        
+        tk.Label(self.top_frame, text="Load a .csv file to start",
+                 font=("Ariel", 30, "bold")).pack()
+        tk.Button(self.top_frame, text="Click to open file",
+                                      command=self.load_dataset).pack()
+        tk.Button(self.top_frame, text="destroy frame", 
+                  command = lambda: self.top_frame.pack_forget).pack()
+        
         
         
     
     def load_dataset(self):
         f = filedialog.askopenfilename()
         self.csv_file = pd.read_csv(f, parse_dates=True)
-#        pdb.set_trace()
         self.X = self.csv_file.as_matrix()
         
-        
-
-
-#------------------------------TODO LIST---------------------------------------
-# -Find monthly expenditures
-# -Create graphical display of money spent and money deposited
-# -Find way to delete canvas to make the GUI more dynamic (i.e. either
-    #remove frames or canvas and use one)
 NUMLATEST = 10
 #-----------------------------Tkinter functions-------------------------------#
 def close(master):
@@ -58,32 +96,6 @@ def destroy_frames(frames): #put this into a class to avoid supplying each and
 #-----------------------------Statistics--------------------------------------#
 
     
-#def statistics(frames, X):
-#    statframe = frames.pop(0)
-#    if (len(frames) >= 1):
-#        destroy_frames(frames)
-#    tk.Label(statframe, text="The latest").pack()
-#    fiveFreq = tk.Listbox(statframe)
-#    for i in range(0, NUMLATEST):
-#        fiveFreq.insert(i, X[i,1])
-#    fiveFreq.pack(side=tk.RIGHT)
-#    statframe.pack(expand=tk.YES)
-    
-#def line_plot(frames, X, master):
-#    destroy_frames(frames)
-#    fig = Figure (figsize=(5, 5), dpi=100)
-#    f = fig.add_subplot(111)
-#    X[pd.isnull(X[:, 3]),3]=0
-#    X[pd.isnull(X[:, 2]),2]=0
-#    spending = X[:, 2]*-1 + X[:, 3]
-#    years = [i[0:4] for i in X[:, 0]]
-#    f.plot(years, spending, scalex=True)
-#    canvas = FigureCanvasTkAgg (fig, master)
-#    canvas.show()
-#    canvas.get_tk_widget().pack(side=tk.TOP, fill = tk.BOTH, expand=True)
-#    canvas._tkcanvas.pack(side=tk.TOP, fill = tk.BOTH, expand=True)
-#    canvas.delete("all")
-
 if __name__ == '__main__':
     root = tk.Tk()
 #    monthly = Monthly()
