@@ -17,16 +17,16 @@ import time as t
 
 class RepresentExpenditure():
     def __init__(self, parent, X=0, *args, **kwargs):
-        try:
-            print(X[1,0]) #Check that there's a CSV file added that has more
-                #than one row.
-        except:
-            tk.messagebox.showerror("No CSV file detected")
         self.X = X
         self.frame = parent
         self.kwargs = kwargs
-        self.NUMLATEST = kwargs["NUMLATEST"] #temporary number, will make user 
-            #entered
+        self.NUMLATEST = 10
+            
+    def load_dataset(self):
+        f = tk.filedialog.askopenfilename()
+        self.csv_file = pd.read_csv(f, parse_dates=True)
+        self.X = self.csv_file.as_matrix()
+        
 #TODO: Create popup/widget to get NUMLATEST Value
         
     def statistics(self):
@@ -70,8 +70,8 @@ class MainPage(tk.Frame):
         self.create_Menu()
         tk.Label(self.top_frame, text="Load a .csv file to start",
                  font=("Ariel", 30, "bold")).pack()
-        tk.Button(self.top_frame, text="Click to open file",
-                                      command=self.load_dataset).pack()
+        tk.Button(self.top_frame, text="Click to open file", 
+                  command=lambda: RepresentExpenditure(self.top_frame).load_dataset()).pack()
         tk.Button(self.top_frame, text="destroy frame", 
                   command = lambda: self.top_frame.pack_forget).pack()
         
@@ -83,25 +83,21 @@ class MainPage(tk.Frame):
         tk.Label(root, text="Current time: " + str(t.localtime().tm_mon) + 
                  ", " + str(t.localtime().tm_year)).pack()
         mainmenu = tk.Menu(self.parent)
-        
         #for now let NUMLATEST = 10
 #        stats = RepresentExpenditure(self.top_frame, self.X, NUMLATEST=10)
-        mainmenu.add_command(label="stop", command = lambda: self.parent.destroy())
+        mainmenu.add_command(label="Stop", command = lambda: self.parent.destroy())
         filemenu = tk.Menu(mainmenu, tearoff=0)
-        filemenu.add_cascade(label="File", command = lambda: self.load_dataset())
+        mainmenu.add_cascade(label="File", menu=filemenu)
+#        filemenu.add_command(label="Open", command = lambda: self.load_dataset())
+        filemenu.add_command(label="Export", command = lambda:
+                RepresentExpenditure(self.parent).export())
+        root.config(menu=mainmenu)
 #        statmenu = tk.Menu(mainmenu, tearoff=0)
 #        statmenu.add_command(label= str(stats.NUMLATEST)+" latest transactions", 
 #                             command = lambda: stats.statistics())
 #        mainmenu.add_cascade(label="stats", menu=statmenu)
-        root.config(menu=mainmenu)
 #        statmenu.add_command(label="linear graph trans.", command = lambda: 
 #            line_plot(self.parent, self.X, self.parent))
-    
-    def load_dataset(self):
-        f = tk.filedialog.askopenfilename()
-        self.csv_file = pd.read_csv(f, parse_dates=True)
-        self.X = self.csv_file.as_matrix()
-        
 
 if __name__ == '__main__':
     root = tk.Tk()
