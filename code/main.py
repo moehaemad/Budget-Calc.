@@ -16,9 +16,11 @@ import time as t
     #remove frames or canvas and use one)
 
 class RepresentExpenditure():
-    def __init__(self, parent, X=0, *args, **kwargs):
+    def __init__(self, parent, X=None, *args, **kwargs):
         self.X = X
-        self.frame = parent
+        self.parent = parent
+        self.show_frame = tk.Frame(self.parent)
+        self.show_frame.pack()
         self.kwargs = kwargs
         self.NUMLATEST = 10
             
@@ -30,14 +32,19 @@ class RepresentExpenditure():
 #TODO: Create popup/widget to get NUMLATEST Value
         
     def statistics(self):
-        tk.Label(self.frame, text="The latest").pack()
-        fiveFreq = tk.Listbox(self.frame)
+        try:
+            self.X.any()
+        except:
+            tk.Label(self.show_frame, text="Please load file first").pack()
+            return None
+        self.show_frame.destroy()
+        self.show_frame = tk.Frame(self.parent)
+        self.show_frame.pack()
+        tk.Label(self.show_frame, text="The latest").pack()
+        fiveFreq = tk.Listbox(self.show_frame)
         for i in range(0, self.NUMLATEST):
             fiveFreq.insert(i, self.X[i,1])
-        fiveFreq.pack(side=tk.RIGHT) 
-        #NOT SURE IF I SHOULD PACK FRAME TWICE ONCE
-            #IN MAINPAGE CLASS AND THE OTHER HERE
-        #self.frame.pack(expand=tk.YES)
+        fiveFreq.pack(side=tk.RIGHT)
 
 #TODO:  ONCE STATISTICS IS FUNCTIONAL, FIX THIS FUNCTION TO BE OBJECT ORIENTED
     def line_plot(self, frames, X, master):
@@ -56,7 +63,8 @@ class RepresentExpenditure():
         
     def export(self):
         #TODO: Implement to export an estimation of spending
-        tk.messagebox.showinfo("Function not implemented")
+        tk.messagebox.showinfo(title="Not Available", 
+                               message="Function not implemented")
 
 
 class MainPage(tk.Frame):
@@ -67,30 +75,33 @@ class MainPage(tk.Frame):
         self.parent = parent
         self.top_frame = tk.Frame(self.parent)
         self.top_frame.pack()
-        self.create_Menu()
+        self.stats_obj = RepresentExpenditure(self.top_frame)
+        self.create_MenuBar()
         tk.Label(self.top_frame, text="Load a .csv file to start",
                  font=("Ariel", 30, "bold")).pack()
         tk.Button(self.top_frame, text="Click to open file", 
-                  command=lambda: RepresentExpenditure(self.top_frame).load_dataset()).pack()
+                  command=lambda: self.stats_obj.load_dataset()).pack()
         tk.Button(self.top_frame, text="destroy frame", 
-                  command = lambda: self.top_frame.pack_forget).pack()
+                  command = lambda: self.top_frame.destroy()).pack()
+        tk.Button(self.top_frame, text="Load latest", 
+                  command = lambda: self.stats_obj.statistics()).pack()
         
         
         
         
-    def create_Menu(self):
-        t.localtime.__getattribute__
-        tk.Label(root, text="Current time: " + str(t.localtime().tm_mon) + 
+    def create_MenuBar(self):
+        tk.Label(self.top_frame, text="Current time: " + str(t.localtime().tm_mon) + 
                  ", " + str(t.localtime().tm_year)).pack()
         mainmenu = tk.Menu(self.parent)
         #for now let NUMLATEST = 10
 #        stats = RepresentExpenditure(self.top_frame, self.X, NUMLATEST=10)
         mainmenu.add_command(label="Stop", command = lambda: self.parent.destroy())
+        mainmenu.add_command(label="Home", command = lambda: self.__init__(self.parent))
         filemenu = tk.Menu(mainmenu, tearoff=0)
         mainmenu.add_cascade(label="File", menu=filemenu)
 #        filemenu.add_command(label="Open", command = lambda: self.load_dataset())
         filemenu.add_command(label="Export", command = lambda:
-                RepresentExpenditure(self.parent).export())
+                self.stats_obj.export())
         root.config(menu=mainmenu)
 #        statmenu = tk.Menu(mainmenu, tearoff=0)
 #        statmenu.add_command(label= str(stats.NUMLATEST)+" latest transactions", 
