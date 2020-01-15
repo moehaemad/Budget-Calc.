@@ -37,9 +37,7 @@ class RepresentExpenditure():
         except:
             tk.Label(self.show_frame, text="Please load file first").pack()
             return None
-        self.show_frame.destroy()
-        self.show_frame = tk.Frame(self.parent)
-        self.show_frame.pack()
+        self.clear_screen()
         tk.Label(self.show_frame, text="The latest").pack()
         fiveFreq = tk.Listbox(self.show_frame)
         for i in range(0, self.NUMLATEST):
@@ -47,24 +45,37 @@ class RepresentExpenditure():
         fiveFreq.pack(side=tk.RIGHT)
 
 #TODO:  ONCE STATISTICS IS FUNCTIONAL, FIX THIS FUNCTION TO BE OBJECT ORIENTED
-    def line_plot(self, frames, X, master):
+    def line_plot(self):
+        super.clear_screen(parent=self.parent, frame=self.show_frame)
         fig = Figure (figsize=(5, 5), dpi=100)
         f = fig.add_subplot(111)
-        X[pd.isnull(X[:, 3]),3]=0
-        X[pd.isnull(X[:, 2]),2]=0
-        spending = X[:, 2]*-1 + X[:, 3]
-        years = [i[0:4] for i in X[:, 0]]
+        self.X[pd.isnull(self.X[:, 3]),3]=0
+        self.X[pd.isnull(self.X[:, 2]),2]=0
+        spending = self.X[:, 2]*-1 + self.X[:, 3]
+        years = [i[0:4] for i in self.X[:, 0]]
         f.plot(years, spending, scalex=True)
-        canvas = FigureCanvasTkAgg (fig, master)
+        canvas = FigureCanvasTkAgg (fig, self.show_frame)
         canvas.show()
         canvas.get_tk_widget().pack(side=tk.TOP, fill = tk.BOTH, expand=True)
         canvas._tkcanvas.pack(side=tk.TOP, fill = tk.BOTH, expand=True)
         canvas.delete("all")
+    
+    def file_exists(self):
+        try:
+            self.X.any()
+        except:
+            tk.Label(self.show_frame, text="Please load file first").pack()
+        return None
         
     def export(self):
         #TODO: Implement to export an estimation of spending
         tk.messagebox.showinfo(title="Not Available", 
                                message="Function not implemented")
+    
+    def clear_screen(self):
+        self.show_frame.destroy()
+        self.show_frame = tk.Frame(self.parent)
+        self.show_frame.pack()
 
 
 class MainPage(tk.Frame):
@@ -83,6 +94,8 @@ class MainPage(tk.Frame):
                   command=lambda: self.stats_obj.load_dataset()).pack()
         tk.Button(self.top_frame, text="Load latest", 
                   command = lambda: self.stats_obj.statistics()).pack()
+#        tk.Button(self.top_frame, text="Line Plot",
+#                  command = lambda: self.stats_obj.line_plot()).pack()
         
         
         
