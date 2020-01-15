@@ -81,8 +81,6 @@ class MainPage(tk.Frame):
                  font=("Ariel", 30, "bold")).pack()
         tk.Button(self.top_frame, text="Click to open file", 
                   command=lambda: self.stats_obj.load_dataset()).pack()
-        tk.Button(self.top_frame, text="destroy frame", 
-                  command = lambda: self.top_frame.destroy()).pack()
         tk.Button(self.top_frame, text="Load latest", 
                   command = lambda: self.stats_obj.statistics()).pack()
         
