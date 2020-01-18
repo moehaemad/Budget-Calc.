@@ -8,6 +8,7 @@ from monthly import Monthly
 from dates import Dates as dt
 import tkinter as tk
 import time as t
+from datetime import datetime
 
 #------------------------------TODO LIST---------------------------------------
 # -Find monthly expenditures
@@ -32,34 +33,63 @@ class RepresentExpenditure():
 #TODO: Create popup/widget to get NUMLATEST Value
         
     def statistics(self):
-        try:
-            self.X.any()
-        except:
-            tk.Label(self.show_frame, text="Please load file first").pack()
-            return None
         self.clear_screen()
+        self.file_exists()
         tk.Label(self.show_frame, text="The latest").pack()
         fiveFreq = tk.Listbox(self.show_frame)
         for i in range(0, self.NUMLATEST):
-            fiveFreq.insert(i, self.X[i,1])
-        fiveFreq.pack(side=tk.RIGHT)
+            fiveFreq.insert(i, self.X[i,:])
+        fiveFreq.pack(fill=tk.BOTH, expand=True)
 
-#TODO:  ONCE STATISTICS IS FUNCTIONAL, FIX THIS FUNCTION TO BE OBJECT ORIENTED
+#TODO:  
     def line_plot(self):
-        super.clear_screen(parent=self.parent, frame=self.show_frame)
+        self.clear_screen()
+        self.file_exists()
+        #The following indexes are assuming that the X numpy array contains
+            #values in the following order: date (year-month-day), names, 
+            #expenditure, and income. I.e. 0,1,2,3
+#        fields = self.find_fields()
+        pdb.set_trace()
+        fields = {'date': 0, 'name':1, 'expend':2, 'income':3}
         fig = Figure (figsize=(5, 5), dpi=100)
         f = fig.add_subplot(111)
-        self.X[pd.isnull(self.X[:, 3]),3]=0
-        self.X[pd.isnull(self.X[:, 2]),2]=0
-        spending = self.X[:, 2]*-1 + self.X[:, 3]
-        years = [i[0:4] for i in self.X[:, 0]]
-        f.plot(years, spending, scalex=True)
+        #These two statements get rid of 'NaN' values in the array
+        self.X[pd.isnull(self.X[:, fields['income']]),fields['income']]=0
+        self.X[pd.isnull(self.X[:, fields['expend']]),fields['expend']]=0
+        net = self.X[:, fields['income']] - self.X[:, fields['expend']]
+        #Get the year value ex. 2019 as a y-axis marker
+        years = [i[0:4] for i in self.X[:, fields['date']]]
+        f.plot(years, net, scalex=True)
+        f.set_xlabel('Years')
+        f.set_ylabel('Net Worth')
         canvas = FigureCanvasTkAgg (fig, self.show_frame)
         canvas.show()
         canvas.get_tk_widget().pack(side=tk.TOP, fill = tk.BOTH, expand=True)
         canvas._tkcanvas.pack(side=tk.TOP, fill = tk.BOTH, expand=True)
         canvas.delete("all")
     
+    def find_fields(self):
+        #----------------------------------BAD CODE: FIX-----------------------
+        #Getting user to input the values for the fields looking for dates, names,
+            #expenditure, income (4 fields)
+        fields = {'date', 'name', 'expenditure', 'income'}
+        tk.Label(self.show_frame, text="Please index each column in their respective boxes",
+                 font=("Ariel", 14)).pack(side=tk.TOP)
+        self.statistics()
+        tk.Label(self.show_frame, text="Dates").pack()
+        date = tk.Entry(self.show_frame).pack()
+        tk.Label(self.show_frame, text="Names").pack()
+        name = tk.Entry(self.show_frame).pack()
+        tk.Label(self.show_frame, text="Expenditure").pack()
+        expend = tk.Entry(self.show_frame).pack()
+        tk.Label(self.show_frame, text="Income").pack()
+        income = tk.Entry(self.show_frame).pack()
+        fields['date'] = date.get()
+        fields['name'] = name.get()
+        fields['expenditure'] = expend.get()
+        fields['income'] = income.get()
+        self.clear_screen()
+        
     def file_exists(self):
         try:
             self.X.any()
@@ -85,7 +115,7 @@ class MainPage(tk.Frame):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
         self.top_frame = tk.Frame(self.parent)
-        self.top_frame.pack()
+        self.top_frame.pack(side=tk.TOP, fill=tk.BOTH)
         self.stats_obj = RepresentExpenditure(self.top_frame)
         self.create_MenuBar()
         tk.Label(self.top_frame, text="Load a .csv file to start",
@@ -94,8 +124,8 @@ class MainPage(tk.Frame):
                   command=lambda: self.stats_obj.load_dataset()).pack()
         tk.Button(self.top_frame, text="Load latest", 
                   command = lambda: self.stats_obj.statistics()).pack()
-#        tk.Button(self.top_frame, text="Line Plot",
-#                  command = lambda: self.stats_obj.line_plot()).pack()
+        tk.Button(self.top_frame, text="Line Plot",
+                  command = lambda: self.stats_obj.line_plot()).pack()
         
         
         
