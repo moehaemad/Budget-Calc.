@@ -2,22 +2,6 @@ import numpy as np
 import pdb;
 class Monthly:
     
-    def heap_sort(self, x_heap):
-        n = len(x_heap)
-        temp = 0 
-        if n == 0:
-            return 0
-        for i in range(n):
-            #right child = 2n + 1
-            if x_heap[2*i + 1] >= x_heap[i]:
-                temp = x_heap[i]
-                x_heap[i] = x_heap[2*i + 1]
-            #left child = 2n + 2
-            elif x_heap[2*i + 2] >= x_heap[i]:
-                temp = x_heap[i]
-                x_heap[i] = x_heap[2*i + 2]
-    #TODO: sort the array of X[:,[0,1]] s.t. name and date are sorted together
-        #respectively. Sort on X[:,1](names) alphabetically
     def find_Monthly_Expenditure (self, X,*args):
     #    frequencies = dict(zip(names,counts))
     #    print (frames) #don't think I need frames but not sure right now
@@ -54,5 +38,12 @@ class Monthly:
             answer = input ("Is " + names[i] + " a monthly ependiture")
             if (answer == "y"):
                 self.monthlies[i] = names[i]
-    
+    def __init__ (self, main, frame):
+        #require the main object in which the monthly class was instantiated in
+            #and the frame it's using to draw representations in.
+        self.frame = frame
+        self.main = main
+#        pdb.set_trace()
+#        self.main.RepresentExpenditure(self.frame).clear_screen()
+
             

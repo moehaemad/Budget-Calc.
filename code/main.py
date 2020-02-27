@@ -4,19 +4,19 @@ import pandas as pd
 import os
 import numpy as np
 import pdb
-from monthly import Monthly
 from dates import Dates as dt
 import tkinter as tk
 import time as t
 from datetime import datetime
-
+from monthly import Monthly
+from controller import Controller
 #------------------------------TODO LIST---------------------------------------
 # -Find monthly expenditures
 # -Create graphical display of money spent and money deposited
 # -Find way to delete canvas to make the GUI more dynamic (i.e. either
     #remove frames or canvas and use one)
 
-class RepresentExpenditure():
+class RepresentExpenditure(Controller):
     def __init__(self, parent, X=None, *args, **kwargs):
         self.X = X
         self.parent = parent
@@ -33,7 +33,8 @@ class RepresentExpenditure():
 #TODO: Create popup/widget to get NUMLATEST Value
         
     def statistics(self):
-        self.clear_screen()
+#        self.clear_screen()
+        super.clear_screen([self.parent, self.show_frame])
         self.file_exists()
         tk.Label(self.show_frame, text="The latest").pack()
         fiveFreq = tk.Listbox(self.show_frame)
@@ -43,6 +44,7 @@ class RepresentExpenditure():
 
 #TODO:  
     def line_plot(self):
+        #Todo: Fix line plot to map only a few not whole years
         self.clear_screen()
         self.file_exists()
         #The following indexes are assuming that the X numpy array contains
@@ -118,6 +120,7 @@ class MainPage(tk.Frame):
         self.top_frame.pack(side=tk.TOP, fill=tk.BOTH)
         self.stats_obj = RepresentExpenditure(self.top_frame)
         self.create_MenuBar()
+        self.monthly = Monthly(self, self.top_frame)
         tk.Label(self.top_frame, text="Load a .csv file to start",
                  font=("Ariel", 30, "bold")).pack()
         tk.Button(self.top_frame, text="Click to open file", 
@@ -126,6 +129,7 @@ class MainPage(tk.Frame):
                   command = lambda: self.stats_obj.statistics()).pack()
         tk.Button(self.top_frame, text="Line Plot",
                   command = lambda: self.stats_obj.line_plot()).pack()
+        tk.Button(self.top_frame, text="Monthly Payments").pack()
         
         
         
